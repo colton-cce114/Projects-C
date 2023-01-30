@@ -1,0 +1,49 @@
+Semaphores
+	Basically universal numbers > 0. Can set,
+	add, subtract, and wait for a semaphore 
+	to equal 0. If it's < 0, it blocks. 
+	
+	Using a semaphore involves these steps:
+		1. Create/open a semaphore set 
+		   using semget().
+		2. Initialize the set using 
+		   semctl() SETVAL or SETALL. 
+		3. Perform operations on 
+		   semaphore values using 
+		   semop(). We use this to 
+		   acquire/release resources. 
+		4. Remove semaphores with 
+		   semctl() IPC_RMID  
+		   
+	semget
+		#include <sys/types.h>
+		#include <sys/sem.h>
+		int semget(key_t key, int nsems,
+		           int semflg);
+		
+		Returns semaphore set id on
+		success. nsems is the number of
+		semaphores in the set. If using 
+		semget to retrieve a set, nsems
+		must be less than or equal to the 
+		number of semaphores in the set. 
+		Flags are:
+			IPC_CREAT
+			IPC_EXCL
+			
+	semctl
+		int semctl(int semid, int semnum, 
+		           int cmd, (maybe union));
+		
+		Semid is semaphore set. semnum is 
+		the semaphor to access. int cmd is
+		what we want to do. 
+		
+		int cmd is:
+			IPC_RMID - deletes the set
+			IPC_STAT - put copy of 
+			           semid_ds into
+			           buffer pointed
+			           at by union
+			IPC_SET -
+			          

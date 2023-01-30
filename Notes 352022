@@ -1,0 +1,70 @@
+Process:
+	Instruction text //Programming Language
+	Static variables 
+	Heap             //Dynamic memory
+	Execution Stack  //Function run domain
+	
+Managing Processes:
+	Fork - clones the current process and creates
+	       a child process.
+	Exit - terminates a process.
+	Wait - suspends the current process and waits
+	       for a child process to terminate.
+	Exec - loads a new program into the process's
+	       memory. 
+	       
+Fork:
+	#include <signal.h>
+	pid_t fork();
+	
+	Returns process id of child to parent on 
+	success, -1 on failure. Returns 0 to child. 
+	Makes new process(child) which is a clone of
+	of the parent. 
+	Child has access to all file descriptors
+	and things the parent has access to. 
+	
+	Race Condition:
+		Condition that occurs when we try to 
+		generate results from a parent/child
+		shared resource and the resource's 
+		value has a hidden dependency based
+		on the order in which processes 
+		execute. So it's a race between parent
+		and child. Gotta take steps to make
+		sure parent doesn't do anything till
+		child does it first. Use signals
+		to do this.
+		
+	Kill System Call:
+		#include <signal.h>
+		int kill(pid_t pid, int sig);
+		
+		Sends signal to process(child/parent).
+		Returns 0 on success. -1 on failure. 
+		
+		Can effect one or more processes based on 
+		value of pid.
+		pid > 0 - signal is sent to the process id.
+		pid = 0 - signal is sent to every process in
+		          the calling process's process group.
+		pid < -1 - signal is sent to every process
+		           in the process group with the 
+		           id of -(pid).
+		pid = -1 - signal is sent to every process
+		           the calling process has permission
+		           to send it to excluding itself
+		           and PID 1.
+		
+		Kill can see if a process exists. 
+		Set signal parameter to 0. 
+		If kill returns -1, with error of ESRCH, the
+		process doesn't exist. 
+		If kill returns -1, with error of EPERM, the
+		process exists, but we can't send signals to
+		it. 
+		If kill returns 0, the process exists and we
+		can send a signal to it. 
+		
+		
+		          
