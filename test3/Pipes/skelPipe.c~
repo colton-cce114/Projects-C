@@ -1,0 +1,71 @@
+/*
+  Name: Colton Earls
+  NetID: cce114
+  Compiler: gcc
+  Program Description: This is the pipe skeleton program for test 3. 
+  OPERATION: ./skelPipe <filename>
+
+
+   Write a multiple concurrent process program that does the following
+   1. Displays the contents of a file to STDOUT
+
+   The program should perform this task in the following way:
+   1. Report an error message if no file was specified
+   2. Open a pipe to allow for communication between the parent and child
+
+   3. Create a child process that:
+      a. Dups the write side of the pipe to STDOUT
+      b. Executes the cat function on the file specified in the 
+         command line arguments
+
+Note: cat is a program that is run from the linux command line .. just type man cat for more details.
+
+   4. Create a parent process that:
+      a. Reads character data from the read side of the pipe
+      b. Outputs the data to STDOUT
+   -- Make certain to continue reading from the pipe until all of the
+      data has been read and sent to STDOUT
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <time.h>
+#include <signal.h>
+#include <wait.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/sem.h>
+#include <sys/shm.h>
+#include <sys/ipc.h>
+#include "binary_sem.h"
+
+void assertFunction(int errorNum, const char *errorDesc)
+{
+  if (errorNum == -1)
+    {
+      perror(errorDesc);
+      exit(EXIT_FAILURE);
+    }
+}
+
+int checkCall(int val, char *msg)
+{
+  if (val == -1)
+    {
+      if (errno == EINTR) return -1;
+      perror(msg);
+      exit(EXIT_FAILURE);
+    }
+  return val;
+}
+
+int main(int argc, char *argv[])
+{
+  if(argc != 2)
+    {
+      assertFunction(-1, "Please enter a valid file id as a parameter\n!");
+    }
+}
