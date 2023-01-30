@@ -1,0 +1,30 @@
+/*
+  Name: Colton Earls
+  NetID: cce114
+  Compiler: gcc
+  Program Description: 
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <time.h>
+#include <sys/types.h>
+#include <sys/semh.h>
+#include "semun.h"
+
+void assertFunction(int errorNum, const char *errorDesc)
+{
+  if (e == -1)
+    {
+      perror(errorDesc);
+      exit(EXIT_FAILURE);
+    }
+}
+
+int main(int argc, char *argv[])
+{
+  
+}

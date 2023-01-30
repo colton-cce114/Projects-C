@@ -1,0 +1,164 @@
+/*
+  Name: Colton Earls
+  NetID: cce114
+  Compiler: gcc
+  Program Description: This program has 2 processes. One process(child)
+                       reads a sequence of numbers from a file and 
+                       reports to the other process(parent) under 
+                       different conditions. The parent process 
+                       interfaces with the user and manages the child. 
+                       
+                       Parent: SIGINT             Child: SIGALRM
+                               SIGCHLD                   SIGTERM
+                               SIGUSR1                   
+                               SIGUSR2
+                         Ignore:                    Ignore: SIGINT
+*/
+
+#include <fcntl.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <sys/time.h>
+#include <signal.h>
+#include <errno.h>
+
+static pid_t parentPID; //GLOBAL pid
+
+static void signalHandler(int sig)
+{
+  if (sig == SIGINT) //Parent->ask user if sure, terminate if yes. 
+    {
+      
+    }
+  if (sig == SIGUSR1) //Child->Parent->Warning(pressure low)
+    {
+      write(1, "Warning! Line pressure is dangerously low. It has been\n x seconds since the previous warning!\n", 96);
+    }
+  if (sig == SIGUSR2) //Child->Parent->Warning(pressure high)
+    {
+      write(1, "Warning! Line pressure is dangerously high. It has been\n x seconds since the previous warning!\n", 97);
+    }
+  if (sig == SIGTERM) //Child->parent dead, terminate
+    {
+      
+    }
+  if (sig == SIGALRM)
+    {
+      
+    }
+  if (sig == SIGCHLD) //Parent->clean up bc child has terminated.  
+    {
+      char *ans;
+      char *chck = "Y";
+      write(1, "Exit:Are you sure (Y/n)?: ", 26);
+      scanf("%c", ans);
+      write(1, "\n", 2);
+      if (strcmp(ans, chck) == 0)
+	{
+	  while (waitpid (-1, NULL, WNOHANG) > 0) continue;
+          write(1, "Warning! Pressure control monitoring has been\nterminated, exiting the system...", 80);
+          exit(EXIT_SUCCESS);
+	}
+      
+    }
+  
+}
+
+union btod
+{
+  int value;
+  char bytes[4];
+};
+
+int main(int argc, char * argv[])
+{
+  struct sigaction sa;
+  struct itimerval itmr;
+  pid_t childPID;
+  int inputFd, numRead;
+  int count; //Numbers read from flowData.dat
+  union btod inBytes; //Union for binary to decimal
+
+  itmr.it_interval.tv_sec = 5; //WAIT 5 seconds between readings
+  itmr.it_interval.tv_usec = 0;
+  itmr.it_value.tv_sec = 1; //WAIT 1 seconds before starting
+  itmr.it_value.tv_usec = 0;
+
+  sigemptyset(&sa.sa_mask); //Empty the mask
+  sa.sa_handler = signalHandler; //Set signal handler
+  sa.sa_flags = 0;
+
+  //Open the flowData.dat file
+  inputFd = open("flowData.dat", O_RDONLY);
+  if (inputFd == -1)
+    {
+      perror("Failed to find/open flodData.dat");
+      exit(EXIT_FAILURE);
+    }
+  
+  parentPID = getpid(); //Set parent's PID
+
+  //EVERY SIGNAL HERE EXISTS ONLY IN THE PARENT
+  if (sigaction(SIGCHLD, &sa, NULL) == -1)
+    {
+      perror("Failure at SIGCHLD");
+      exit(EXIT_FAILURE);
+    }
+  if (sigaction(SIGUSR1, &sa, NULL) == -1)
+    {
+      perror("Failure at SIGUSR1");
+      exit(EXIT_FAILURE);
+    }
+  if (sigaction(SIGUSR2, &sa, NULL) == -1)
+    {
+      perror("Failure at SIGUSR2");
+      exit(EXIT_FAILURE);
+    }
+  if (sigaction(SIGINT, &sa, NULL) == -1)
+    {
+      perror("Failure at SIGINT");
+      exit(EXIT_FAILURE);
+    }
+
+  switch(childPID = fork())
+    {
+    case -1:
+      perror("Failed to fork...");
+      exit(EXIT_FAILURE);
+    case 0: //What the child does
+      sigaddset(&sa.sa_mask, SIGINT);      //Mask ctrl+c for the child
+      if (sigaction(SIGALRM, &sa, NULL) == -1) //Check for any alarms
+	{
+	  perror("Failure at sigaction alarm");
+	  exit(EXIT_FAILURE);
+	}
+      if (setitimer(ITIMER_REAL, &itmr, NULL) == -1) //Start the timer
+	{
+	  perror("Failure to setting iTimer");
+	  exit(EXIT_FAILURE);
+	}
+      while(1)
+	{
+	  numRead = read(inputFd, inBytes.bytes, 4);
+	  if (numRead > 0) //While stuff is being read
+	    {
+	      if (inBytes.value < 550 && inBytes.value > 450) //450<x<550
+		{
+		  
+		}
+	      
+	    }
+	  
+	}
+      break;
+    default: //What the parent does
+      while(1)
+	{
+	  pause();
+	}
+      
+    }
+  
+}

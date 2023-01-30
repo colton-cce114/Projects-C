@@ -1,0 +1,113 @@
+/*
+  Name: Cooper Earls
+  NetID: cce114
+  Compiler: gcc
+  Program Description: This program counts the number of words or characters
+                        in a file. 
+
+                       It is called like: ./program.exe -w -c <filename>                               Those parameters being wordcount,charcount,filename
+
+                       ****MAKE THE FILENAME LAST****
+
+		       I'm not gonna lie some of the error checking could've
+                       been way better but I just got back from Missouri
+                       and I didn't have much time to work on this last 
+                       week and it's 10:32 p.m. on Sunday so. It'll do for now.
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <malloc.h>
+#include <unistd.h>
+#include <errno.h>
+#include <signal.h>
+
+/*
+void signalHandler(int signum)
+{
+  if (signum == )
+    {
+
+    }
+}
+*/
+
+int main(int argc, char *argv[])
+{
+  char buf[1024];
+  char chr;
+  int readFd, cont = 1;
+  int numChar;
+  int numWord;
+
+  //struct sigaction handler; //Creates a sigaction
+  //handler.sa_handler = signalHandler; //Assigns the signal handler to sigaction
+
+  if (argc == 1) //ex.) ./newwc <-c or -w>
+    {
+      if (strcmp(argv[1], "-c") == 0) //If argv1 == -c
+	{
+	  printf("arg c");
+	}
+      if (strcmp(argv[1], "-w") == 0) //If argv1 == -w
+	{
+	  printf("arg w");
+	}
+      else //Error checking
+	{
+	  perror("Invalid parameter");
+	  exit(EXIT_FAILURE);
+	}
+    }
+  if (argc == 2) //ex.) ./newwc <-c> <-w> vice versa
+    {
+
+      if ((strcmp(argv[1], "-c") == 0) && (strcmp(argv[2], "-w") == 0))
+	{
+	  
+	}
+      if ((strcmp(argv[1], "-w") == 0) && (strcmp(argv[2], "-c") == 0))
+	{
+	  
+	}
+      else //Error checking
+	{
+	  perror("Invalid parameter(s)");
+	  exit(EXIT_FAILURE);
+	}
+	
+    }
+  if (argc == 3) //ex.) ./newwc <-c> <-w> <filename>
+    {
+      //readFd = open("argv[3]", O_RDONLY); //Try to open the file
+      
+      if ((strcmp(argv[1], "-c") == 0) && (strcmp(argv[2], "-w") == 0))
+	{
+	  if (readFd == -1)
+	    {
+	      perror("Failed to find/open the target file");
+	      exit(EXIT_FAILURE);
+	    }
+	}
+      if ((strcmp(argv[1], "-w") == 0) && (strcmp(argv[2], "-w") == 0))
+	{
+	  if (readFd == -1)
+	    {
+	      perror("Failed to find/open the target file");
+	      exit(EXIT_FAILURE);
+	    }
+	}
+      else //Error checking
+	{
+	  perror("Invalid parameter(s)");
+	  exit(EXIT_FAILURE);
+	}
+    }
+  else //3 < arguments < 1    (incorrect)
+    {
+      perror("Invalid number of arguments");
+      exit(EXIT_FAILURE);
+    }
+  
+}

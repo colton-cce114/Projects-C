@@ -1,0 +1,13 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+int theInt = 98;
+char theChar = (char)theInt;
+printf("%d -> %c\n", theInt, theChar);
+
+
+
+int theInt2 = 115;
+char theChar2 = (char)theInt2;
+printf("%d -> %c\n", theInt2, theChar2);

@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
+#include <time.h>
+#include <sys/time.h>
+
+//Global counter
+int count = 0;
+
+void sigHandler(int sig)
+{
+  if (sig = SIGINT) //Keyboard interrupts
+    {
+      count += 5;
+    }
+  if (sig = SIGALRM)
+    {
+      count -= 25;
+    }
+}
+
+int main(int argc, char *argv[])
+{
+  //Declare sigaction to use a sighandler
+  struct sigaction hndlr;
+  struct timespec ts; //associated with nanosleep. Parameter for annosleep
+  struct itimerval itmr; //Declare timer for setitimer
+
+  ts.tv_sec = 0;
+  ts.tv_nsec = 2000000000; //2000 microseconds
+
+  //sigaction part
+  hndlr.sa_handler = sigHandler; //Set hndlr's signal handler
+  sigemptyset(&hndlr.sa_mask);  //Empty the signal mask
+  hndlr.sa_flags = 0;
+}

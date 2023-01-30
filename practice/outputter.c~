@@ -1,0 +1,55 @@
+#include <fcntl.h>  // open
+#include <unistd.h> // write
+#include <string.h> // strlen
+#include <stdio.h>
+#include <stdlib.h> // EXIT_FAILURE
+
+int main(void)
+{
+  /*
+    int fd = open("/dev/tty", O_WRONLY);
+
+    if(fd == -1) {
+        char error_msg[] = "Error opening tty";
+        write(STDERR_FILENO, error_msg, strlen(error_msg));
+        exit(EXIT_FAILURE);
+    }
+
+    char my_string[] = "Hello, World!\n";
+    write(fd, my_string, strlen(my_string));
+  */
+
+  //write(1, "EXIT: Are you sure? (Y/n): ", 2
+  
+  const char *strthing;
+  
+ int myPrint(const char *str)
+  {
+    int len = strlen(str);
+    if (write(1, str, len) == 0)
+      {
+	return 1;
+      }
+    return 0;
+    
+  }
+
+ int myPrintint(const int val)
+ {
+   char buffer[20];
+   sprintf(buffer, "%i", val);
+   write(1, buffer, strlen(buffer));
+   printf("\n");
+ }
+
+ //myPrintint(42);
+ 
+ while(strcmp(bufstop, buf) != 0)
+   {
+      
+   }
+
+
+ return 0;
+ 
+}
